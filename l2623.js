@@ -3,38 +3,27 @@
  * @return {Function}
  */
 function memoize(fn) {
-  const sumMap = new Map();
-  const fibMap = new Map();
-  const factMap = new Map();
-
-  let sumCount = 0;
-  let fibCount = 0;
-  let factCount = 0;
+  const map = new Map();
 
   return function (...args) {
-    return {
-      sum: (a, b) => {
-        if (a === undefined && b === undefined) {
-          return sumCount;
-        }
-        const key = a + '-' + b;
-        if (sumMap.has(key)) {
-          return sumMap.get(key);
-        }
+    const json = JSON.stringify([...args]);
+    console.log(map);
+    if (map.has(json)) {
+      console.log('called');
+      return map.get(json);
+    }
 
-        sumMap.add(key, a + b);
-        sumCount++;
-        return sumMap.get(key);
-        return [1];
-      },
-      fib: (n) => {
-        return [1];
-      },
-      factorial: (n) => {
-        return [1];
-      },
-    };
+    const res = fn(...args);
+    map.set(json, res);
+    return res;
   };
 }
 
-memoize;
+let callCount = 0;
+const memoizedFn = memoize(function (a, b) {
+  callCount += 1;
+  return a + b;
+});
+memoizedFn(2, 3); // 5
+memoizedFn(2, 3); // 5
+console.log(callCount); // 1

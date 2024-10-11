@@ -1,35 +1,48 @@
-// quick sort is a sort algorithm that time complexity is O(nlogn)
-// specify a pivot and reorder the array by putting the smaller value than the pivot to the left and big value on the right.
-// And do that for left side and right side of the pivot till it becomes only one value.
+/**
+ * 2024/10/10 半分ほどしか覚えていないので明日もう1度トライする。
+ * 2024/10/11 80％くらいできてたけど、最後に再帰するときmidを使っていた。正しくは、i,jのiを使わなくてはいけない。明日またやる。
+ *
+ * ----
+ * time complexity O(nlogn)のソートアルゴリズム。
+ * pivotを決めて、そのpivotより小さいものを左に、大きいものを右に集めるように実装する。
+ * pivotの決定方法は3値の中央値を取るやり方にすると、O(nlogn)に近づく。
+ * pivotを一番右に置いて、i, jで最初と最後から挟み撃ちをして進めていく。
+ * 該当するものがあれば、i, jを入れ替える。i, jが衝突したら、pivotとiを入れ替える。
+ * iはすでにソート済みなので、その前後（0~i-1とi+1~nums.length-1）に同じ処理を加える。（再帰）
+ *
+ */
 
 export {};
 
-const isBiggerIndex = (nums: number[], a: number, b: number): number => {
+const biggerIdx = (nums: number[], a: number, b: number): number => {
   return nums[a] > nums[b] ? a : b;
 };
 
-const getMedian = (nums: number[], a: number, b: number): number => {
-  const mid = a + Math.floor((b - a) / 2);
-  const bigger = Math.max(nums[a], nums[b]);
-  const bigger2 = Math.max(bigger, nums[mid]);
+const getMedianIdx = (nums: number[], a: number, b: number): number => {
+  const midIdx = a + Math.floor((b - a) / 2);
+  const biggerVal = biggerIdx(nums, a, b);
+  const biggerVal2 = biggerIdx(nums, biggerVal, midIdx);
 
-  if (bigger2 === nums[a]) {
-    return isBiggerIndex(nums, b, mid);
+  if (biggerVal2 === a) {
+    return biggerIdx(nums, b, midIdx);
   }
-  if (bigger2 === nums[b]) {
-    return isBiggerIndex(nums, a, mid);
+  if (biggerVal2 === b) {
+    return biggerIdx(nums, a, midIdx);
   }
-  return isBiggerIndex(nums, a, b);
+  return biggerVal;
 };
 
-const partition = (nums: number[], l: number, r: number): number => {
-  const pivotIndex = getMedian(nums, l, r);
-  [nums[pivotIndex], nums[r]] = [nums[r], nums[pivotIndex]];
+const quickSort = (nums: number[], l: number, r: number): void => {
+  if (l >= r) {
+    return;
+  }
 
+  const mid = getMedianIdx(nums, l, r);
+  [nums[mid], nums[r]] = [nums[r], nums[mid]];
+
+  const pivot = nums[r];
   let i = l - 1;
   let j = r;
-  const pivot = nums[r];
-
   while (true) {
     while (nums[++i] < pivot);
     while (i < --j && nums[j] > pivot);
@@ -42,17 +55,8 @@ const partition = (nums: number[], l: number, r: number): number => {
   }
 
   [nums[r], nums[i]] = [nums[i], nums[r]];
-  return i;
-};
-
-const quickSort = (nums: number[], l: number, r: number): void => {
-  if (l >= r) {
-    return;
-  }
-  const pivot = partition(nums, l, r);
-  // Because center is already sorted.
-  quickSort(nums, l, pivot - 1);
-  quickSort(nums, pivot + 1, r);
+  quickSort(nums, l, i - 1);
+  quickSort(nums, i + 1, r);
 };
 
 const sort = (nums: number[]): number[] => {

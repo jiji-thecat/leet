@@ -1,6 +1,7 @@
 /**
  * 2024/10/10 半分ほどしか覚えていないので明日もう1度トライする。
  * 2024/10/11 80％くらいできてたけど、最後に再帰するときmidを使っていた。正しくは、i,jのiを使わなくてはいけない。明日またやる。
+ * 2024/10/13 スムーズに解けた。1週間後くらいにもう1度やってみる。
  *
  * ----
  * time complexity O(nlogn)のソートアルゴリズム。
@@ -14,22 +15,23 @@
 
 export {};
 
-const biggerIdx = (nums: number[], a: number, b: number): number => {
+const getBiggerIndex = (nums: number[], a: number, b: number) => {
   return nums[a] > nums[b] ? a : b;
 };
 
-const getMedianIdx = (nums: number[], a: number, b: number): number => {
-  const midIdx = a + Math.floor((b - a) / 2);
-  const biggerVal = biggerIdx(nums, a, b);
-  const biggerVal2 = biggerIdx(nums, biggerVal, midIdx);
+const getMedian = (nums: number[], a: number, b: number) => {
+  const mid = b + Math.floor((b - a) / 2);
+  const biggerIndex = getBiggerIndex(nums, a, b);
+  const biggerIndex2 = getBiggerIndex(nums, biggerIndex, mid);
 
-  if (biggerVal2 === a) {
-    return biggerIdx(nums, b, midIdx);
+  if (biggerIndex2 === a) {
+    return getBiggerIndex(nums, b, mid);
   }
-  if (biggerVal2 === b) {
-    return biggerIdx(nums, a, midIdx);
+  if (biggerIndex2 === b) {
+    return getBiggerIndex(nums, a, mid);
   }
-  return biggerVal;
+
+  return biggerIndex;
 };
 
 const quickSort = (nums: number[], l: number, r: number): void => {
@@ -37,12 +39,13 @@ const quickSort = (nums: number[], l: number, r: number): void => {
     return;
   }
 
-  const mid = getMedianIdx(nums, l, r);
-  [nums[mid], nums[r]] = [nums[r], nums[mid]];
+  const pivotIndex = getMedian(nums, l, r);
+  [nums[r], nums[pivotIndex]] = [nums[pivotIndex], nums[r]];
 
-  const pivot = nums[r];
   let i = l - 1;
   let j = r;
+  const pivot = nums[r];
+
   while (true) {
     while (nums[++i] < pivot);
     while (i < --j && nums[j] > pivot);
@@ -55,8 +58,9 @@ const quickSort = (nums: number[], l: number, r: number): void => {
   }
 
   [nums[r], nums[i]] = [nums[i], nums[r]];
+
   quickSort(nums, l, i - 1);
-  quickSort(nums, i + 1, r);
+  quickSort(nums, l + 1, r);
 };
 
 const sort = (nums: number[]): number[] => {

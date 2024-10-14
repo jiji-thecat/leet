@@ -15,58 +15,5 @@
 
 export {};
 
-const getBiggerIndex = (nums: number[], a: number, b: number) => {
-  return nums[a] > nums[b] ? a : b;
-};
-
-const getMedian = (nums: number[], a: number, b: number) => {
-  const mid = b + Math.floor((b - a) / 2);
-  const biggerIndex = getBiggerIndex(nums, a, b);
-  const biggerIndex2 = getBiggerIndex(nums, biggerIndex, mid);
-
-  if (biggerIndex2 === a) {
-    return getBiggerIndex(nums, b, mid);
-  }
-  if (biggerIndex2 === b) {
-    return getBiggerIndex(nums, a, mid);
-  }
-
-  return biggerIndex;
-};
-
-const quickSort = (nums: number[], l: number, r: number): void => {
-  if (l >= r) {
-    return;
-  }
-
-  const pivotIndex = getMedian(nums, l, r);
-  [nums[r], nums[pivotIndex]] = [nums[pivotIndex], nums[r]];
-
-  let i = l - 1;
-  let j = r;
-  const pivot = nums[r];
-
-  while (true) {
-    while (nums[++i] < pivot);
-    while (i < --j && nums[j] > pivot);
-
-    if (i >= j) {
-      break;
-    }
-
-    [nums[i], nums[j]] = [nums[j], nums[i]];
-  }
-
-  [nums[r], nums[i]] = [nums[i], nums[r]];
-
-  quickSort(nums, l, i - 1);
-  quickSort(nums, l + 1, r);
-};
-
-const sort = (nums: number[]): number[] => {
-  quickSort(nums, 0, nums.length - 1);
-  return nums;
-};
-
 let nums = [3, 11, 14, 17, 12, 15, 10, 16, 7, 18, 6, 19, 13, 2, 9, 1, 20, 4, 8, 5];
 console.log(sort(nums));

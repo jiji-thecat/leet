@@ -28,41 +28,27 @@
  Do not return anything, modify nums1 in-place instead.
  */
 function merge(nums1: number[], m: number, nums2: number[], n: number): void {
-  let result = [];
+  let i = 0;
+  let j = 0;
+  let k = 0;
 
-  if (n === 0) {
-    return;
-  }
-
-  if (m === 0) {
-    nums1 = nums2.concat();
-    return;
-  }
-
-  let i = 0,
-    j = 0;
-  while (i < m || j < n) {
-    if (i >= m) {
-      result.push(nums2[j]);
-      j++;
-    } else if (j >= n) {
-      result.push(nums1[i]);
-      i++;
-    } else if (nums1[i] < nums2[j]) {
-      result.push(nums1[i]);
-      i++;
-    } else if (nums1[i] > nums2[j]) {
-      result.push(nums2[j]);
-      j++;
+  while (i < m && j < n) {
+    if (nums1[i] < nums2[j]) {
+      nums1[k++] = nums1[i++];
     } else {
-      result.push(nums1[i]);
-      result.push(nums2[j]);
+      nums1.splice(i, 1, nums2[j++]);
       i++;
-      j++;
+      k++;
     }
   }
 
-  nums1 = result.concat();
+  while (i < m) {
+    nums1[k++] = nums1[i++];
+  }
+
+  while (j < n) {
+    nums1[k++] = nums2[j++];
+  }
 }
 
 const num1 = [1, 2, 3, 0, 0, 0];

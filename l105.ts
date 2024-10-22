@@ -69,6 +69,14 @@ function buildTree(preorder: number[], inorder: number[]): TreeNode | null {
     const rootIndexInorder = map.get(root);
 
     node.left = calc(preStart + 1, inStart, rootIndexInorder - 1);
+    /**
+     * // prestart + inorderのleft部分の大きさ + 1 が、次のprestartになる。
+     * pre = [3,9,20,15,7]
+     * ino = [9,3,15,20,7]
+     *          ^
+     * prestart = 0
+     * inorderのleft部分の大きさ = 1(ino[0])
+     *  */
     node.right = calc(preStart + (rootIndexInorder - inStart) + 1, rootIndexInorder + 1, inEnd);
 
     return node;
@@ -77,8 +85,11 @@ function buildTree(preorder: number[], inorder: number[]): TreeNode | null {
   return calc(0, 0, inorder.length - 1);
 }
 
-const pre = [3, 9, 20, 15, 7];
-const ino = [9, 3, 15, 20, 7];
+//const pre = [3, 9, 20, 15, 7];
+//const ino = [9, 3, 15, 20, 7];
 
-//console.log(makeArray(buildTreeSlice(pre, ino)));
-console.log(makeArray(buildTree(pre, ino)));
+const pre = [1, 2, 3];
+const ino = [2, 1, 3];
+
+console.log(makeArray(buildTreeSlice(pre, ino)));
+//console.log(makeArray(buildTree(pre, ino)));

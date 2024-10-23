@@ -76,6 +76,7 @@ function buildTree(preorder: number[], inorder: number[]): TreeNode | null {
      *          ^
      * prestart = 0
      * inorderのleft部分の大きさ = 1(ino[0])
+     * +1 = その次。preorderが20から始まるように。
      *  */
     node.right = calc(preStart + (rootIndexInorder - inStart) + 1, rootIndexInorder + 1, inEnd);
 

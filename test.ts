@@ -37,3 +37,17 @@
 let arr = new Array();
 arr.push([1, 2]);
 console.log(arr);
+
+let a = 123;
+let b = a;
+a = 456;
+console.log(a, b);
+
+// aの参照先は{c:3}を持つ
+let obj: any = { a: { c: 3 }, b: 2 };
+//objCpは{c:3}への参照を受け取る
+let objCp = obj.a;
+// obj.aの参照先をnullに変更
+obj.a = null;
+// 参照先を変えたので、objCpは影響をうけない
+console.log(obj, objCp);

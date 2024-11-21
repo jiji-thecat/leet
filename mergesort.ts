@@ -59,7 +59,7 @@ const mergeSort = (nums: number[], l: number, r: number): void => {
 
   const mid = l + Math.floor((r - l) / 2);
   mergeSort(nums, l, mid);
-  mergeSort(nums, mid + 1, r);
+  mergeSort(nums, mid + 1, r); // midだとダブるので、+1。
 
   merge(nums, l, mid, r);
 };

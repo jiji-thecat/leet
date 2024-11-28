@@ -47,7 +47,7 @@ const sortList = (head: ListNode | null): ListNode | null => {
 
   while (j !== null) {
     i = i!.next;
-    j = j.next?.next || null;
+    j = j.next?.next || null; // j=もし?にひっかかったら、undefinedになる可能性があるので、nullに置き換える必要あり。
   }
 
   const mid = i!.next;

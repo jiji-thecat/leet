@@ -54,93 +54,97 @@ Explanation
     Maintain the order of variables in the output for consistency with the input.
  */
 
-/**
- * a+b-(a+d) => a+b-a-d => b-d
- * a+b-(a+d-(f-g)) => a+b-a-d+f-g => b-d+f-g
- * [-] // hold sign that is before ( )
- *
- * (1) simplify
- *
- * loop i=0 i<str.length
- *   if i+1 is (
- *      push str(i) to stack but cauculate with stack[stack.length-2] and put correct sign
- *
- *   if i is (
- *     continue; // do not want to push ( in ans
- *   if it is )
- *
- *
- *   if stack is not empty
- *     if str(i) is sign then calculate with stack[last] and put the correct sign to ans
- *     if str is variable do nothing
- *   else
- *    push str(i) to ans
- *
- * (2) calculate
- *
- *
- * a+b-(a+d)
- *    ^
- *
- * i=3, stack=[-], ans=a+b
- *
- */
+function simplifyExpression(expression: string): string {
+  // Expand parentheses and handle signs
+  function expandExpression(expression: string): string {
+    const stack: number[] = [1];
+    let sign = 1;
+    let expanded = '';
+    let i = 0;
 
-const calc = (str: string) => {
-  let stack: string[] = [];
-  let ans = '';
+    while (i < expression.length) {
+      const char = expression[i];
 
-  /**
-   * a+b-(a-d-(a+b))
-   * iiii iiiii
-   *
-   * i=3 stack=[-] i=5
-   * i=4
-   * i=5
-   * i=6
-   * i=7
-   */
-
-  let i = 0;
-  while (i < str.length) {
-    if (str.at(i + 1) === '(') {
-      if (stack.length !== 0) {
-        if (str.at(i) === '+') {
-          stack.push(stack[stack.length - 1] === '-' ? '-' : '+');
-        } else if (str.at(i) === '-') {
-          stack.push(stack[stack.length - 1] === '-' ? '+' : '-');
-        }
+      if (char === '+') {
+        sign = stack[stack.length - 1];
+        i++;
+      } else if (char === '-') {
+        sign = -stack[stack.length - 1];
+        i++;
+      } else if (char === '(') {
+        stack.push(sign);
+        i++;
+      } else if (char === ')') {
+        stack.pop();
+        i++;
       } else {
-        stack.push(str.at(i)!);
-      }
-
-      i += 2;
-      continue;
-    } else if (str.at(i) === ')') {
-      stack.pop();
-    } else {
-      if (stack.length !== 0) {
-        if (str.at(i) === '+') {
-          ans += stack[stack.length - 1] === '-' ? '-' : '+';
-        } else if (str.at(i) === '-') {
-          ans += stack[stack.length - 1] === '-' ? '+' : '-';
-        } else if (str.at(i - 1) === '(') {
-          ans += stack[stack.length - 1];
-          ans += str.at(i);
-        } else {
-          ans += str.at(i);
+        // Read term (variable/number combination)
+        let term = '';
+        while (i < expression.length && /[a-z0-9]/.test(expression[i])) {
+          term += expression[i];
+          i++;
         }
-      } else {
-        ans += str.at(i);
+        expanded += (sign === -1 ? '-' : '+') + term;
+        sign = stack[stack.length - 1]; // Reset sign after term
       }
     }
-    i++;
+
+    return expanded;
   }
 
-  return ans;
-};
+  // Combine terms
+  function simplifyTerms(expression: string): string {
+    const terms: { [key: string]: number } = {};
 
-console.log(calc('a+b-(a+d)')); //a+b-a-d -> b-d
-console.log(calc('x+y-(x-z+y)')); //x + y - (x - z + y) -> x+y-x+z-y
-console.log(calc('x+y-(x-z+(j+y)-(l-d+u))')); //x+y-x+z-j-y+l-d+u
-console.log(calc('-(a+b-(c-d-(z-x-(-a-f))))')); //-a-b+c-d-z+x+-a-f
+    let i = 0;
+    let sign = 1;
+    let coeff = 0;
+    let variable = '';
+
+    while (i < expression.length) {
+      const char = expression[i];
+
+      if (char === '+' || char === '-') {
+        if (variable) {
+          terms[variable] = (terms[variable] || 0) + sign * (coeff || 1);
+        }
+
+        coeff = 0;
+        variable = '';
+        sign = char === '-' ? -1 : 1;
+        i++;
+      } else if (/[a-z]/.test(char)) {
+        variable = char;
+        i++;
+      } else if (/[0-9]/.test(char)) {
+        let numStr = '';
+        while (i < expression.length && /[0-9]/.test(expression[i])) {
+          numStr += expression[i];
+          i++;
+        }
+
+        coeff = parseInt(numStr, 10);
+      } else {
+        i++;
+      }
+    }
+
+    if (variable) {
+      terms[variable] = (terms[variable] || 0) + sign * (coeff || 1);
+    }
+
+    return Object.entries(terms)
+      .filter(([_, coeff]) => coeff !== 0) // Remove zero coefficients
+      .map(([variable, coeff]) => (coeff === 1 ? variable : coeff === -1 ? `-${variable}` : `${coeff}${variable}`))
+      .join('+')
+      .replace(/\+\-/g, '-'); // Clean up "+-" to "-"
+  }
+
+  const expanded = expandExpression(expression);
+  return simplifyTerms(expanded);
+}
+
+// Test cases
+console.log(simplifyExpression('a+b-(a-d)')); // Expected: "b+d"
+console.log(simplifyExpression('m+n-(p-m)')); // Expected: "2m+n-p"
+console.log(simplifyExpression('x+y-(x-z+(j+y)-(l-d+u))')); // Expected: "z-j+l-d+u"

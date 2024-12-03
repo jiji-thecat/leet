@@ -54,6 +54,52 @@ Explanation
     Maintain the order of variables in the output for consistency with the input.
  */
 
+/**
+ * Note:
+ * 2024/12/02 明日また解く。
+ *
+ * ---
+ * 2段階に分けて考える。
+ *
+ * 1. 展開
+ * (の前にあるsignを記憶して、それを計算に使っていきたい。なので、signという変数を使って、次にくるべきsignを記憶し、(の前のsignはstackに積んでいく。
+ *
+ * - +　の場合
+ * -- sign = stack[last]にする
+ * - - の場合
+ * -- sign = - stack[last]にする
+ * - ( の場合
+ * -- stack.push(sign)をする
+ * - ) の場合
+ * -- stack.pop()をする
+ * - variable の場合
+ * -- regex.test()関数を使って、trueを返す間、tにvariableを積んでいく。
+ * -- variableが積まれたら、ans += sign===-1 ? "-" + "+" +tをする
+ * -- 最後にsign=stack[last]に戻しておく。
+ *
+ * 2. 計算
+ * オブジェクトを使って、variableの計算をする。最後に、objectのentriesを配列として取り出して、それに対して計算をする。
+ *
+ * - strをloopする
+ * -- a-zの場合
+ * --- variableに記憶する
+ * -- 0-9の場合
+ * --- coeffにparseIntして保存する
+ * -- それ以外 i++する
+ * -- +, -の場合
+ * --- もしvariableがあれば、objectに入れていきたい。
+ * --- object[variable]に、計算結果を入れていく。object[variable] = (obj[var] || 0) + sign * (coeff || 1)
+ * ---- obj[var]がすでに存在すれば、それを引き出しておく。そして、sign*(coeffがあればcoeff, なければ1)を足せば、計算ができる。
+ * --- 計算が完了したら、デフォルトにしたいので、variable="", coeff=0, sign = char[i]の値をいれる
+ * - 最後の値が計算できていないので、もう1回if(variable)の計算を挟んでおわり。
+ *
+ * - オブジェクトに, a: 0, b: 1, d: 1のように計算
+ * -- valueが0の場合はシカトするので、filterを使う
+ * -- mapを使って、valueが1: {key}, valueが-1: {-key}, valueがそれ以外: {value}{key}となるように計算をする。
+ * -- join("+")をして、文字列化する
+ * -- 最後にregexで+-を-に置き換える
+ */
+
 function simplifyExpression(expression: string): string {
   // Expand parentheses and handle signs
   function expandExpression(expression: string): string {

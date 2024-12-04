@@ -56,22 +56,40 @@ Explanation
  * Note:
  * 2024/12/02 明日また解く。
  * 2024/12/04 5割ほど。。明日また解く。
+ * 2024/12/04 全部しっかり解けた。まだ怪しいので2,3日後また解く。
+ * 
  */
 
 /**
+ * a+b-(a-d) -> b+d
+ *
  * 1. expand
  * a+b-(a-d) -> +a+b-a+d
- * - stack sign that is before (
- * - remember sign when +/-
- * - variable push sign and variable
- * 2. calc
- * +a+b-a+d -> b+d
- * map: {a: 0, b: 1, d: 1}
+ * - loop through s and use a stack and push sign before (
+ * - use sign to remember the last sign
+ * - if ) then pop stack
  *
- * - sign = s.at(0)
- * - loop i=1, i<s.length
- * -- if s.at(i) is +/- remember sign
- * -- else register s.at(i) to map and calc.
+ * 2. calc
+ * +a+b-a+d->b+d
+ *
+ * 1. calculate coefficients using object map: {b: 1, d: 1}
+ * - loop 0 to s.length
+ * - if sign calculate with map
+ * -- we have coeff and variable. ★
+ * - if number remember coeff
+ * - if variable remember variable
+ * after loop do the last calc★
+ * 2. convert to b+d from map.
+ * -- entries() -> [[a, 0], [b, 1], [d, 1]]
+ * -- filter v!==0 -> [[b, 1], [d, 1]], [[b, 1], [d, -1]]
+ * -- map -> ["b", "d"], ["b", "-d"]
+ * -- join("+") -> b+d, b+-d
+ * -- convert +- -> -
+ * 3. return value
+ *
+ * TC O(n)
+ * SC O(n)
+ *
  */
 
 export {};
@@ -80,8 +98,8 @@ const expandExp = (str: string): string => {
   const stack = [1];
   let sign = 1;
   let ans = '';
-
   let i = 0;
+
   while (i < str.length) {
     const c = str.at(i);
 
@@ -98,95 +116,86 @@ const expandExp = (str: string): string => {
       stack.pop();
       i++;
     } else {
-      let strVal = '';
+      // a, 2a
+      let str2 = '';
+
       while (i < str.length && /[a-z0-9]/.test(str.at(i)!)) {
-        strVal += str.at(i);
+        str2 += str.at(i);
         i++;
       }
 
-      ans += (sign === -1 ? '-' : '+') + strVal;
-      sign = stack[stack.length - 1];
+      ans += (sign === -1 ? '-' : '+') + str2;
     }
   }
 
   return ans;
 };
 
-const calcExp = (str: string): string => {
-  const replaceAns = (ans: string): string => {
+const calc = (str: string): string => {
+  const replaceStr = (str2: string): string => {
+    let final = '';
     let i = 0;
-    let newStr = '';
-
-    while (i < ans.length - 1) {
-      if (ans[i] === '+' && ans[i + 1] === '-') {
-        newStr += '-';
+    while (i < str2.length - 1) {
+      if (str2[i] === '+' && str2[i + 1] === '-') {
+        final += '-';
         i += 2;
       } else {
-        newStr += ans[i++];
+        final += str2.at(i);
+        i++;
       }
     }
 
-    return newStr + ans[i];
+    return final + str2.at(i);
   };
-  let i = 0;
-  let sign = 1;
-  let coeff = 0;
   const obj: { [key: string]: number } = {};
+  let coeff = 0;
+  let sign = 1;
+  let variable = '';
+  let i = 0;
 
   while (i < str.length) {
     const c = str.at(i);
 
-    if (c === '+') {
-      sign = 1;
-      i++;
-    } else if (c === '-') {
-      sign = -1;
+    if (c === '+' || c === '-') {
+      // calculate using coeff, variable
+      // {a: 1}, {}
+      if (variable) {
+        obj[variable] = (obj[variable] ?? 0) + sign * (coeff || 1);
+      }
+
+      sign = c === '-' ? -1 : 1;
       i++;
     } else if (/[0-9]/.test(c!)) {
-      coeff = parseInt(c!);
-      i++;
-    } else if (/[a-z]/.test(c!)) {
-      let temp = '';
-      while (i < str.length && /[a-z]/.test(str.at(i)!)) {
-        temp += str.at(i);
+      let numStr = '';
+      while (i < str.length && /[0-9]/.test(str.at(i)!)) {
+        numStr += str.at(i);
         i++;
       }
 
-      // obj={a: 1} temp=a, sign=-1
-      // obj={}, temp=a, sign=-1
-      // obj={}, temp=a, sign=-1, coeff=2
-      if (obj[temp]) {
-        obj[temp] = coeff === 0 ? obj[temp] + sign : obj[temp] + sign * coeff;
-      } else {
-        obj[temp] = coeff === 0 ? sign : sign * coeff;
-      }
+      coeff = parseInt(numStr);
+    } else if (/[a-z]/.test(c!)) {
+      variable = c!;
+      i++;
     } else {
       i++;
     }
   }
 
-  const ans = Object.entries(obj)
+  if (variable) {
+    obj[variable] = (obj[variable] ?? 0) + sign * (coeff || 1);
+  }
+
+  const fixStr = Object.entries(obj)
     .filter(([_, v]) => v !== 0)
-    .map(([k, v]) => {
-      // {a: 1}, {a: 2}, {a: -1}
-      return v === 1 ? `${k}` : v === -1 ? `-${k}` : `${v}${k}`;
-    })
+    .map(([k, v]) => (v === -1 ? `-${k}` : v === 1 ? `${k}` : `${v}${k}`))
     .join('+');
-  /**
-   * obj={a: 0, b: 1, d: 1}
-   * entries().filter(not val is 0)
-   * map [b, d]
-   * join("+")
-   * replace +- -> -
-   */
-  return replaceAns(ans);
+
+  return replaceStr(fixStr);
 };
 
 const simplifyExpression = (str: string): string => {
   const expand = expandExp(str);
-
-  //return expand;
-  return calcExp(expand);
+  return calc(expand);
 };
 
 // Test cases

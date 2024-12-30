@@ -27,52 +27,9 @@
  * • each element of array A is an integer within the range [1..100,000].
  */
 
-/**
- *
- * You are given an array A of N integers: the K-th guest wants to be in a room that contains at most A[K] guests,
- * including themselves.
- * return how many rooms are required.
- *
- * [2, 1, 4] -> 2
- * edge: [3]->1
- *
- * 1. sort
- * [1,2,4]
- * 2. loop nums and calc room capacity
- * ans=0
- * for(let i=0, i<nums.len)
- *  ans++
- *  roomSize=n[i]
- *  roomCap=0
- *  while(i<nums.len && roomCap<roomSize)
- *   roomCap++
- *   i++
- *
- * return ans
- *
- * tc o(nm)
- * sc o(1)
- */
-
 export {};
 
-const solve = (nums: number[]): number => {
-  nums.sort((a, b) => a - b);
-  let ans = 0;
-  let i = 0;
-  while (i < nums.length) {
-    const roomSize = nums[i];
-    let roomCap = 0;
-    ans++;
-
-    while (i < nums.length && roomCap < roomSize) {
-      roomCap++;
-      i++;
-    }
-  }
-
-  return ans;
-};
+const solve = (nums: number[]): number => {};
 console.log(solve([1, 1, 1, 1, 1])); // 5
 console.log(solve([2, 1, 4])); // 2
 console.log(solve([2, 7, 2, 9, 8])); // 2

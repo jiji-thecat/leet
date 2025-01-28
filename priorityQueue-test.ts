@@ -1,77 +1,96 @@
+/**
+ * summary
+ *  priority queue is a data structure that holds value and priority.
+ *  There is a rule that values are sorted according to priority.
+ *  If you think it like a binary tree, parent always needs to be smaller than children.(or vice versa)
+ *  It is FIFO structure.
+ *
+ * enqueue
+ *  push the value in hash but sort it according to priority(bubbleup)
+ *
+ * dequeue
+ *  pop the first value of hash and push the last value at the first and sort it according to priority. (bubbledown)
+ *
+ */
 export {};
-
 class PriorityQueue<T> {
-  private heap: { value: T; priority: number }[] = [];
+  private hash: { value: T; priority: number }[] = [];
 
   enqueue = (value: T, priority: number) => {
-    this.heap.push({ value, priority });
+    this.hash.push({ value, priority });
     this.bubbleUp();
   };
 
-  dequeue = () => {
-    if (this.heap.length === 0) {
-      return null;
-    }
-    if (this.heap.length === 1) {
-      return this.heap.pop()?.value;
-    }
-
-    const ans = this.heap[0];
-    this.heap[0] = this.heap.pop()!;
-    this.bubbleDown();
-
-    return ans.value;
-  };
-
-  peek = () => {
-    return this.heap[0].value;
-  };
-
-  isEmpty = () => {
-    return this.heap.length === 0;
-  };
-
+  /**
+   * check hash[parent].priority and hash[last element].priority
+   * if last element priority is smaller bubble up. if not do nothing
+   */
   bubbleUp = () => {
-    let index = this.heap.length - 1;
+    let index = this.hash.length - 1;
 
-    while (index > 0) {
+    if (index > 0) {
       const parentIndex = Math.floor((index - 1) / 2);
 
-      if (this.heap[index].priority > this.heap[parentIndex].priority) {
-        break;
+      if (this.hash[index].priority > this.hash[parentIndex].priority) {
+        return;
       }
 
-      [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+      [this.hash[index], this.hash[parentIndex]] = [this.hash[parentIndex], this.hash[index]];
       index = parentIndex;
     }
   };
 
+  peek = () => {
+    return this.hash[this.hash.length - 1];
+  };
+
+  isEmpty = () => {
+    return this.hash.length === 0;
+  };
+
+  dequeue = () => {
+    if (this.hash.length === 0) {
+      return 'hash is empty';
+    }
+    if (this.hash.length === 1) {
+      return this.hash.pop()?.value;
+    }
+
+    const top = this.hash[0];
+    this.hash[0] = this.hash.pop()!;
+    this.bubbleDown();
+    return top.value;
+  };
+
+  /**
+   * big value is on hash[0] so move it to the right place.
+   * calculate lChildren and rChildren of the parent[0] and if parent[0] is bigger then exchange with l or rchildren.
+   * continue.
+   */
   bubbleDown = () => {
     let index = 0;
-    const length = this.heap.length;
+    const length = this.hash.length;
 
     while (true) {
       const leftChildIndex = index * 2 + 1;
       const rightChildIndex = index * 2 + 2;
       let smallest = index;
 
-      if (leftChildIndex < length && this.heap[leftChildIndex].priority < this.heap[index].priority) {
+      if (leftChildIndex < length && this.hash[leftChildIndex].priority < this.hash[index].priority) {
         smallest = leftChildIndex;
       }
-      if (rightChildIndex < length && this.heap[rightChildIndex].priority < this.heap[index].priority) {
+      if (rightChildIndex < length && this.hash[rightChildIndex].priority < this.hash[index].priority) {
         smallest = rightChildIndex;
       }
-
       if (smallest === index) {
         break;
       }
 
-      [this.heap[smallest], this.heap[index]] = [this.heap[index], this.heap[smallest]];
+      [this.hash[smallest], this.hash[index]] = [this.hash[index], this.hash[smallest]];
       index = smallest;
     }
   };
 }
-
 const pq = new PriorityQueue<string>();
 
 pq.enqueue('Task 1', 3); // 優先度3

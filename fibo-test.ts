@@ -40,5 +40,22 @@ const fibonacciLong = (n: number): number => {
 
   return fibonacciLong(n - 1) + fibonacci(n - 2);
 };
+
+function fibonacciNoRec(n: number) {
+  if (n <= 1) return n;
+
+  let prev2 = 0,
+    prev1 = 1,
+    cur = 0;
+
+  for (let i = 2; i <= n; i++) {
+    cur = prev1 + prev2;
+    prev2 = prev1;
+    prev1 = cur;
+  }
+
+  return cur;
+}
+console.log(fibonacciNoRec(100));
 console.log(fibonacci(100));
 console.log(fibonacciLong(100));

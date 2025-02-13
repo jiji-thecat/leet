@@ -32,58 +32,30 @@ Output: 13
 
 /**
  * summary
- *  sorted list. find missing number
+ *  consecutive number array. find and return misssing number
  *
  * example
- *  [1,2,3,4,6,7]->5
- *  [10,11,12,14]->13
- *  [-3,-1,0,1,2,3]->-2
+ *  [1,2,4,5]->3
  *
  * edge
  *  -
  *
  * memo
- *  set=[1,2,3,4,6,7]
+ *  [1,2,4,5]->3
+ *   i m   j
  *
- * *solution 1*
- *   curr=n[0]
- *   while(set.has(curr))
- *    curr++;
- *
- *   return curr
- *
- * *solution 2*
- *  binary search
- *
- *  [1,2,3,4,6,7]->5
- *   i   m     j
- * 　　　　　i m j
- *         j
- *         m
- *  [1,2,3,5,6,]->4
- *   i   m   j
- * 　　　 i m j
- *       j
- *       m
- *  [10,11,12,14]->13
- *   i   m    j
- *         i  j
- *         m
  * loop i<=j
- *  m = middle
+ *  m = i+(j-i)/2
  *
- *  if n[0] + m === n[m]
- *   i=m+1
- *  else
- *   j=m-1
+ * if n[0] + m === n[m]
+ *  i=m+1
+ * else j=m-1
  *
- * ret n[0] + i
+ * ret n[0]+i
  *
  * tc o(logn)
  * sc o(1)
  *
- * after exiting the loop, i is pointing to the position of the missing number.
- * So we use n[0] + i to get the missing number.
  */
 
 export {};

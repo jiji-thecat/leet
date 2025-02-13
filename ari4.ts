@@ -1,34 +1,39 @@
 // insert a node in sorted list
 /**
- *
  * summary
- *  insert number in sorted linked list
- * return linkedlist
- * 
+ *  insert node in sorted linked list
+ *
  * example
- *  [1,10,20,30], 15->[1,10,15,20,30]
- * 
+ *  [10,20,30], 15->[10,15,20,30]
+ *
  * edge
- *  
+ *  -
+ *
  * memo
- *  [d,1,10,20,30], 15->[1,10,15,20,30]
- *   i 
- *  [d,1,10,20,30], 35->[1,10,15,20,30,35]
- *              i
-
- * loop i !== null
- * if num < i.next.val
- *  newNode = newListNode(num)
- *  next = i.next
- *  i.next = newNode
- *  newNode.next=next
- *  break;
- * 
- * i=i.next
- *  
- *  
-
-*/
+ *  [d,10,20,30], 15->[10,15,20,30]
+ *    c
+ * d.next=head
+ * curr=d
+ *
+ * loop curr.next
+ *  if(target < curr.next.val)
+ *   next = curr.next
+ *   newNode = new ListNode(target)
+ *   curr.next=newNode
+ *   newNode.next=next
+ *   break
+ *
+ *  curr=curr.next
+ *
+ * if(!curr.next)
+ *  curr.next = new ListNode(target)
+ *
+ * ret dummy.next
+ *
+ * tc o(n)
+ * sc o(1)
+ *
+ */
 export {};
 class ListNode {
   val: number;
@@ -42,12 +47,12 @@ class ListNode {
 const solution = (head: ListNode | null, num: number): ListNode | null => {
   const dummy = new ListNode();
   dummy.next = head;
-
   let curr = dummy;
+
   while (curr.next) {
     if (num < curr.next.val) {
-      const newNode = new ListNode(num);
       const next = curr.next;
+      const newNode = new ListNode(num);
       curr.next = newNode;
       newNode.next = next;
       break;

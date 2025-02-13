@@ -26,25 +26,24 @@ Output: "tpircSavaJ"
 
 #### **Constraints:**  
 - The function should handle strings containing spaces, numbers, and special characters.
-
-summary
- reverse string without using reverse()
-
-example
- Input: "hello"  
- Output: "olleh"  
-
- Input: "JavaScript"  
- Output: "tpircSavaJ" 
-
-edge
- "a"->"a"
-
-memo
- 1. loop from i=str.len-1 to 0 and put the value to newStr
- 2. two pointer and swap
- 3. split("") then pop, assign it to top and continue
  */
+
+/**
+ *
+ * summary
+ *  reverse string without using reverse()
+ *
+ * example
+ *  hello->olleh
+ *
+ * edge
+ *  a -> a
+ *
+ * memo
+ *  hello->olleh
+ *  i   j
+ */
+
 export {};
 
 const solution1 = (str: string): string => {
@@ -52,34 +51,25 @@ const solution1 = (str: string): string => {
     return str;
   }
 
-  let res = '';
-  for (let i = str.length - 1; i >= 0; i--) {
-    res += str.at(i);
+  let fixedStr = str.split('');
+  let i = 0;
+  let j = fixedStr.length - 1;
+
+  while (i < j) {
+    [fixedStr[i], fixedStr[j]] = [fixedStr[j], fixedStr[i]];
+    i++;
+    j--;
   }
 
-  return res;
+  return fixedStr.join('');
 };
 
 const solution2 = (str: string): string => {
-  if (str.length === 1) {
-    return str;
-  }
-
-  let l = 0;
-  let r = str.length - 1;
-  let strArr = str.split('');
-
-  while (l < r) {
-    [strArr[l], strArr[r]] = [strArr[r], strArr[l]];
-    l++;
-    r--;
-  }
-
-  return strArr.join('');
+  return '';
 };
 
 const solution = (str: string): string => {
-  return solution2(str);
+  return solution1(str);
 };
 
 console.log(solution('abcde')); // edcba

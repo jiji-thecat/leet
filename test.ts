@@ -51,3 +51,7 @@ let objCp = obj.a;
 obj.a = null;
 // 参照先を変えたので、objCpは影響をうけない
 console.log(obj, objCp);
+
+const add = (a: number, b: number): number => {
+  return a + b;
+};

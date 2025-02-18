@@ -39,42 +39,7 @@ Explanation:
  */
 
 export {};
-function maximumBinaryStringSum(binaryStrings: string[], k: number): number {
-  // バイナリ文字列を整数に変換する
-  const nums = binaryStrings.map((str) => parseInt(str, 2));
-
-  // 文字列の長さを取得
-  const maxLength = binaryStrings[0].length;
-
-  // 最初の合計を計算
-  let sum = nums.reduce((acc, num) => acc + num, 0); // 15
-
-  if (k === 0) {
-    return sum;
-  }
-
-  // 反転操作の候補（反転した後の値 - 元の値）を計算し、最小の差を見つける
-  const diffs = nums.map((num) => {
-    const complement = (1 << maxLength) - 1 - num; // 1の補数を計算するときの式。（13(1101)の補数は2(0010)）
-    return complement - num; // 反転後の値と元の値の差
-  });
-
-  //console.log(diffs); [-11,11]となっている。
-
-  // 反転の差を降順に並べ、最も効果的な反転操作を選ぶ
-  diffs.sort((a, b) => b - a); // [11,-11]
-
-  // k 回まで反転操作を行う
-  for (let i = 0; i < k; i++) {
-    if (diffs[i] > 0) {
-      sum += diffs[i]; // 最大の反転差を加算
-    } else {
-      break; // 差が0以下ならもう反転しても意味がない
-    }
-  }
-
-  return sum;
-}
+function maximumBinaryStringSum(binaryStrings: string[], k: number): number {}
 
 // Test Case 1
 const binaryStrings1 = ['1101', '0010'];

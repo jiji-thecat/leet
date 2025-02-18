@@ -45,44 +45,10 @@ Output: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 
 ---
 
-2025/02/17 o(m*n)の方法で解いた。最適解で明日解く。
-
----
-エラトステネスのふるい。
-配列を用意して、2,3,5...の倍数にマークをつけていって、最後に、マークのついていない配列indexを返すというもの。
-配列arr n+1個で、trueを埋めた物を用意する。
-arr[0]=arr[1]=false　とする。0,1は素数ではないため。
-
-次に倍数にfalseをいれていく。
-for(i=2; i*i<=num; i++)として、二重ループを書く。
- for(j=i*i; j<=num; j+=i) iずつ増えていけなくてはいけないため。
- 　arr[j]=falseをしてつっこんでいく。
-
-最後に、trueのindexだけ抽出して配列として返却する。
-
-tc o(nlog(logn))
-sc o(n)
  */
 
 export {};
-const solution = (n: number): number[] => {
-  if (n === 1) {
-    return [];
-  }
-
-  const arr = new Array(n + 1).fill(true);
-  arr[0] = arr[1] = false;
-
-  for (let i = 2; i * i <= n; i++) {
-    if (arr[i]) {
-      for (let j = i * i; j <= n; j += i) {
-        arr[j] = false;
-      }
-    }
-  }
-
-  return arr.map((v, index) => (v ? index : -1)).filter((v) => v !== -1);
-};
+const solution = (n: number): number[] => {};
 
 console.log(solution(10)); //[2, 3, 5, 7]
 console.log(solution(30)); //[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]

@@ -11,7 +11,7 @@ Your task is to determine the **maximum possible sum** of all the integers after
 #### **Example 1:**  
 ```plaintext
 Input: binaryStrings = ["1101", "0010"], k = 1  
-Output: 27  
+Output: 27 6
 Explanation:  
 - "1101" (13 in decimal) and "0010" (2 in decimal).  
 - Flipping "0010" → "1101" (13 in decimal).  
@@ -21,7 +21,7 @@ Explanation:
 #### **Example 2:**  
 ```plaintext
 Input: binaryStrings = ["101", "111", "000"], k = 2  
-Output: 13  
+Output: 19  
 Explanation:  
 - Original values: [5, 7, 0].  
 - Flipping "000" → "111" (7 in decimal).  

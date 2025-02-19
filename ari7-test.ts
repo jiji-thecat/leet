@@ -1,6 +1,5 @@
 // grid(m*n) with obstacles, find if (m-1,n-1) can be reached from (0,0) in
 // less than or equal to a given time where each movement costs 1 unit of time.
-// いろいろ解き方があるっぽいけど、一番ベーシックなBFSをマスターできていればいいかな。
 /**
  * Problem Statement: Reach the Target in a Grid with Obstacles
 
@@ -74,116 +73,9 @@ Explanation:
 There is no possible path to reach (1,1).
  */
 
-/**
- * 2025/02/19 明日また解く。
- * 
- * ---
-grid[cx][cy] = 1; が必要な理由: 探索済みのノードを再探索しないため。
-具体的な動作
-1. 最初の状態（探索開始）
-
-S 0 0 0
-0 0 0 0
-0 0 0 G
-
-(S = スタート, G = ゴール, 0 = 未探索)
-2. BFS の最初のステップ
-
-    (0,0) から 右・下 を探索して (0,1) と (1,0) をキューに追加
-    その後 grid[0][1] = 1 & grid[1][0] = 1 にする
-
-S 1 0 0
-1 0 0 0
-0 0 0 G
-
-3. 次のステップ
-
-    (0,1) から (0,2)、(1,1) へ移動
-    (1,0) から (1,1)、(2,0) へ移動
-    もし grid[1][1] に 1 を書かなかったら？
-        (0,1) から (1,1) を追加
-        (1,0) からも (1,1) を追加（同じセルが2回追加される！）
-
-S 1 1 0
-1 1 0 0
-1 0 0 G
-
-    無駄な探索が増えてしまう！
- */
-
 export {};
 
-const solutionDfs = (grid: number[][], t: number): boolean => {
-  if (t === 0) {
-    return false;
-  }
-
-  const m = grid.length;
-  const n = grid[0].length;
-
-  const dfs = (i: number, j: number): boolean => {
-    if (i === m - 1 && j === n - 1) {
-      return true;
-    }
-    if (i < 0 || j < 0 || i >= m || j >= n || grid[i][j] === 1 || t <= 0) {
-      return false;
-    }
-
-    grid[i][j] = 1;
-    t--;
-
-    const res = dfs(i + 1, j) || dfs(i - 1, j) || dfs(i, j + 1) || dfs(i, j - 1);
-    grid[i][j] = 0;
-    t++;
-
-    return res;
-  };
-
-  return dfs(0, 0);
-};
-
-const solutionBfs = (grid: number[][], t: number): boolean => {
-  const mat = [
-    [1, 0],
-    [-1, 0],
-    [0, 1],
-    [0, -1],
-  ];
-  const queue: [number, number][] = [[0, 0]];
-  const m = grid.length;
-  const n = grid[0].length;
-
-  while (queue.length && t >= 0) {
-    const len = queue.length;
-
-    for (let i = 0; i < len; i++) {
-      const node = queue.shift()!;
-      const [cx, cy] = node;
-
-      if (cx === m - 1 && cy === n - 1) {
-        return true;
-      }
-
-      grid[cx][cy] = 1; // 訪問済みマーク
-
-      for (const [dx, dy] of mat) {
-        const nx = cx + dx;
-        const ny = cy + dy;
-
-        if (nx < 0 || ny < 0 || nx >= m || ny >= n || grid[nx][ny] === 1) {
-          continue;
-        }
-
-        queue.push([nx, ny]);
-        grid[nx][ny] = 1; // 訪問済みマーク
-      }
-    }
-
-    t--; // BFSのレベル単位で時間を減らす
-  }
-
-  return false;
-};
+const solutionBfs = (grid: number[][], t: number): boolean => {};
 
 const solution = (grid: number[][], t: number): boolean => {
   return solutionBfs(grid, t);
@@ -202,7 +94,7 @@ grid = [
   [1, 0],
 ];
 t = 2;
-console.log(solution(grid, t)); //T
+console.log(solution(grid, t)); // T
 
 grid = [
   [0, 0, 0],

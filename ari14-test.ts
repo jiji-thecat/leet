@@ -63,11 +63,6 @@ In this problem, you are asked to find the shortest path between two nodes in a 
 
 This problem helps test your understanding of tree traversal, Lowest Common Ancestor (LCA) algorithms, and basic tree operations.
  */
-/**
- * 2025/02/19　-1を返す方法のがいいのかいまいちぴんとまだきていない。-1を返さない方法ならば、すんなり解けた。
- * ---
- * LCAを探して、LCAとa, LCAとbの距離をそれぞれ計算して、足してreturnする。
- */
 
 export {};
 class TreeNode {
@@ -94,42 +89,7 @@ const makeTree = (nums: (number | null)[]): TreeNode | null => {
   return result[0];
 };
 
-function findDistance(root: TreeNode | null, a: number, b: number): number {
-  if (!root || (!root.left && !root.right)) {
-    return 0;
-  }
-
-  const searchCA = (root: TreeNode | null): TreeNode | null => {
-    if (!root) {
-      return null;
-    }
-    if (root.val === a || root.val === b) {
-      return root;
-    }
-
-    const resLeft = searchCA(root.left);
-    const resRight = searchCA(root.right);
-
-    return resLeft && resRight ? root : resLeft || resRight;
-  };
-
-  const lca = searchCA(root);
-
-  const dist = (root: TreeNode | null, target: number, sum: number): number => {
-    if (!root) {
-      return 0;
-    }
-    if (root.val === target) {
-      return sum;
-    }
-
-    sum++;
-
-    return dist(root.left, target, sum) + dist(root.right, target, sum);
-  };
-
-  return dist(lca, a, 0) + dist(lca, b, 0);
-}
+function findDistance(root: TreeNode | null, a: number, b: number): number {}
 
 console.log(findDistance(makeTree([1, 2, 3, 4, 5, 6, 7]), 4, 6)); // 4
 console.log(findDistance(makeTree([1, 2, 3, 4, 5, 6, 7]), 5, 6)); // 4

@@ -35,6 +35,7 @@ Follow-up:
 
     Can you optimize your solution to run in O(n⋅m)O(n⋅m) time complexity, where nn and mm are the lengths of num1 and num2 respectively? */
 
+export {};
 const multiply = (num1: any, num2: any): string => {};
 
 console.log(multiply('123', '456')); // Output: "56088"

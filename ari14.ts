@@ -67,6 +67,8 @@ This problem helps test your understanding of tree traversal, Lowest Common Ance
  * 2025/02/19　-1を返す方法のがいいのかいまいちぴんとまだきていない。-1を返さない方法ならば、すんなり解けた。
  * ---
  * LCAを探して、LCAとa, LCAとbの距離をそれぞれ計算して、足してreturnする。
+ * tc o(n)
+ * sc o(n)
  */
 
 export {};
